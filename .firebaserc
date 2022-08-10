@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "hobby-afa88": {
+      "hosting": {
+        "hobby": [
+          "hobby-afa88"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "hobby-afa88"
+  }
+}
