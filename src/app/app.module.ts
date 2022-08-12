@@ -10,6 +10,7 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { provideStorage,getStorage } from '@angular/fire/storage';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     BrowserAnimationsModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    StoreModule.forRoot({}, {})
   ],
   providers: [
     ScreenTrackingService,UserTrackingService
