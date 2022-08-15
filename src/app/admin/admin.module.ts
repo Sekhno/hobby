@@ -11,10 +11,7 @@ import {StoreModule} from "@ngrx/store";
 import {ADMIN_KEY, userReducer} from "./store/reducers/admin.reducer";
 import {EffectsModule} from "@ngrx/effects";
 import {AdminEffect} from "./store/effects/admin.effect";
-import {HTTP_INTERCEPTORS} from "@angular/common/http";
-import {SnackbarInterceptor} from "../_helpers/snackbar.interceptor";
-
-
+import {UPLOAD_KEY, uploadReducer} from "./store/reducers/upload.reducer";
 
 
 @NgModule({
@@ -30,6 +27,7 @@ import {SnackbarInterceptor} from "../_helpers/snackbar.interceptor";
     FlexLayoutModule,
     ReactiveFormsModule,
     StoreModule.forFeature(ADMIN_KEY, userReducer),
+    StoreModule.forFeature(UPLOAD_KEY, uploadReducer),
     EffectsModule.forFeature([AdminEffect])
   ],
   providers: [

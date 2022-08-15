@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormBuilder, Validator, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
 import {loginRequest} from "../store/actions/admin.action";
@@ -7,7 +7,8 @@ import {LoginRequestType} from "../models/login.model";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent implements OnInit {
 

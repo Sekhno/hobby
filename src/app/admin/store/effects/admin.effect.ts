@@ -1,11 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {loginRequest, loginRequestFailure, loginRequestSuccess} from "../actions/admin.action";
-import {catchError, map, switchMap, tap} from "rxjs/operators";
+import {switchMap, tap} from "rxjs/operators";
 import {AngularFireAuth} from "@angular/fire/compat/auth";
-import {from} from "rxjs";
-import {userReducer} from "../reducers/admin.reducer";
-import {UserCredential} from "@angular/fire/auth";
 import {SnackbarService} from "../../../_services/snackbar.service";
 
 @Injectable()

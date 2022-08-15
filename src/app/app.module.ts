@@ -15,6 +15,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import {CoreMaterialModule} from "./core-material.module";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {BUCKET} from "@angular/fire/compat/storage";
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     ScreenTrackingService,
     UserTrackingService,
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
+    // { provide: BUCKET, useValue: 'images-bucket' }
 
   ],
   bootstrap: [AppComponent]
