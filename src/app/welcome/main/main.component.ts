@@ -1,4 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {FileDataType} from "../../admin/models/upload.model";
+import {AngularFirestore} from "@angular/fire/compat/firestore";
 
 @Component({
   selector: 'app-main',
@@ -8,7 +10,11 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
-  constructor() { }
+  readonly collectionImages$ = this.afs.collection<FileDataType>('images').valueChanges();
+
+  constructor(
+    private afs: AngularFirestore,
+  ) { }
 
   ngOnInit(): void {
   }

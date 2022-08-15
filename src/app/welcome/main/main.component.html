@@ -1,2 +1,8 @@
 
-<h1>Main component</h1>
+<ng-container *ngIf="collectionImages$ | async as images">
+  <div class="figure" *ngFor="let image of images">
+    <img [attr.src]="image.url" [attr.alt]="image.title">
+    <span class="figcaption">{{image.title}}</span>
+  </div>
+
+</ng-container>
