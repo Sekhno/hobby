@@ -1,0 +1,56 @@
+<h1 fxLayout="row" fxLayoutAlign="center">Welcome, Olga!</h1>
+
+<form novalidate fxLayout="column" fxLayoutAlign="center" [formGroup]="form">
+  <mat-form-field appearance="legacy">
+    <mat-label>Name</mat-label>
+    <input matInput placeholder="Enter name" type="text" formControlName="title">
+    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field appearance="legacy">
+    <mat-label>Description</mat-label>
+    <input matInput placeholder="Enter description" type="text" formControlName="description">
+  </mat-form-field>
+
+  <mat-form-field appearance="legacy">
+    <mat-label>Orientation</mat-label>
+    <select matNativeControl required formControlName="orientation">
+      <option value="horizontal">Horizontal</option>
+      <option value="vertical">Vertical</option>
+    </select>
+  </mat-form-field>
+
+  <button type="button" mat-raised-button
+          [disabled]="form.invalid"
+          (click)="fileInput.click()"
+  >Choose File</button>
+  <input hidden (change)="onFileSelected()" #fileInput type="file" id="file">
+
+  <button type="button" mat-raised-button color="primary"
+          [disabled]="!fileUploaded"
+          (click)="uploadAndSaveFileData()"
+  >Upload</button>
+</form>
+
+<ng-container *ngIf="fileUploaded">
+  <table>
+    <tr>
+      <td>{{fileUploaded.name}}</td>
+      <td>{{fileUploaded.size}}</td>
+    </tr>
+  </table>
+</ng-container>
+
+<ng-container *ngIf="collectionImages$ | async as images;">
+  <table>
+    <tbody>
+      <tr *ngFor="let image of images">
+        <td>{{image.title}}</td>
+        <td>
+          <mat-icon (click)="delete(image)">delete</mat-icon>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</ng-container>
+

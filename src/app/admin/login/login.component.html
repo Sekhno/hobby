@@ -1,0 +1,18 @@
+<form novalidate fxLayout="column" [formGroup]="form">
+  <mat-form-field appearance="legacy" fxFlex="100">
+    <mat-label>Email</mat-label>
+    <input matInput type="email" placeholder="Enter email" formControlName="email">
+    <mat-icon matSuffix>email</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field appearance="legacy" fxFlex="100" >
+    <mat-label>Password</mat-label>
+    <input matInput type="password" placeholder="Enter password" formControlName="password">
+    <mat-icon matSuffix>password</mat-icon>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" fxFlex="100"
+          [disabled]="form.invalid"
+          (click)="login()"
+  >Login</button>
+</form>
