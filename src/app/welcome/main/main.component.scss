@@ -10,6 +10,11 @@
     width: 100%;
   }
 
+  button {
+    position: absolute;
+    right: 20px; top: 20px;
+  }
+
   .figcaption {
     padding: .5rem 1rem;
     position: absolute;

@@ -9,10 +9,14 @@ export type FileUpload = {
 }
 
 export type FileDataType = {
-  url: string,
-  description: string,
+  name: string,
+  description: string
+  orientation: "vertical" | "horizontal"
   title: string,
-  name: string
+  url: {
+    compress: string,
+    original: string
+  }
 }
 
 export type UploadInitialState = {

@@ -22,7 +22,7 @@ const routes: Routes = [
       {
         path: 'upload',
         component: UploadComponent,
-        canActivate: [AuthGuard]
+        // canActivate: [AuthGuard]
       },
       { path: '**', redirectTo: 'login' },
     ],
