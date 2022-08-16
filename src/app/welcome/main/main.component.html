@@ -1,8 +1,11 @@
-
 <ng-container *ngIf="collectionImages$ | async as images">
   <div class="figure" *ngFor="let image of images">
-    <img [attr.src]="image.url" [attr.alt]="image.title">
+    <img [attr.src]="image.url.compress" [attr.alt]="image.title">
+    <button mat-mini-fab color="primary" aria-label="Open in full">
+      <mat-icon>open_in_full</mat-icon>
+    </button>
     <span class="figcaption">{{image.title}}</span>
+
   </div>
 
 </ng-container>

@@ -1,3 +1,6 @@
+<div class="spinner" *ngIf="isLoading">
+  <mat-spinner></mat-spinner>
+</div>
 <h1 fxLayout="row" fxLayoutAlign="center">Welcome, Olga!</h1>
 
 <form novalidate fxLayout="column" fxLayoutAlign="center" [formGroup]="form">
@@ -22,27 +25,38 @@
 
   <button type="button" mat-raised-button
           [disabled]="form.invalid"
-          (click)="fileInput.click()"
+          (click)="selectImage()"
   >Choose File</button>
-  <input hidden (change)="onFileSelected()" #fileInput type="file" id="file">
+<!--  <input hidden (change)="onFileSelected()" #fileInput type="file" id="file">-->
 
   <button type="button" mat-raised-button color="primary"
-          [disabled]="!fileUploaded"
+          [disabled]="!fileName || !fileOriginalSize || !fileAfterCompressSize"
           (click)="uploadAndSaveFileData()"
   >Upload</button>
 </form>
 
-<ng-container *ngIf="fileUploaded">
+<ng-container *ngIf="fileName && fileOriginalSize && fileAfterCompressSize">
   <table>
+    <thead>
     <tr>
-      <td>{{fileUploaded.name}}</td>
-      <td>{{fileUploaded.size}}</td>
+      <th>Name</th>
+      <th>Original size</th>
+      <th>Compress size</th>
     </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>{{fileName}}</td>
+      <td>{{fileOriginalSize}} </td>
+      <td>{{fileAfterCompressSize}}</td>
+    </tr>
+    </tbody>
+
   </table>
 </ng-container>
 
 <ng-container *ngIf="collectionImages$ | async as images;">
-  <table>
+  <table class="list">
     <tbody>
       <tr *ngFor="let image of images">
         <td>{{image.title}}</td>
