@@ -1,6 +1,10 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FileDataType} from "../../admin/models/upload.model";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
+import {PageEvent} from "@angular/material/paginator";
+import {tap} from "rxjs/operators";
+
+const DATA_IMAGES_COLLECTION = 'images';
 
 @Component({
   selector: 'app-main',
@@ -9,8 +13,13 @@ import {AngularFirestore} from "@angular/fire/compat/firestore";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainComponent implements OnInit {
+  pageEvent!: PageEvent;
 
-  readonly collectionImages$ = this.afs.collection<FileDataType>('images').valueChanges();
+  readonly collectionImages$ = this.afs.collection<FileDataType>(DATA_IMAGES_COLLECTION).valueChanges();
+
+  public loadHandler(e: Event) {
+    (e.target as HTMLImageElement).style.opacity = '1'
+  }
 
   constructor(
     private afs: AngularFirestore,
