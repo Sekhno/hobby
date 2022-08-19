@@ -1,14 +1,13 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import {AngularFirestore} from '@angular/fire/compat/firestore';
-import {FileDataType, FileUpload} from "../models/upload.model";
 import {FormBuilder, Validators} from "@angular/forms";
 import {
   DataUrl,
-  DOC_ORIENTATION,
   NgxImageCompressService,
   UploadResponse,
 } from 'ngx-image-compress';
+import {FileDataType} from "../models/upload.model";
 
 const COLLECTION_IMAGES = 'images';
 const ORIGINAL_IMAGE_PREFIX = 'original_';
@@ -23,15 +22,12 @@ const COMPRESS_IMAGE_PREFIX = 'compress_';
 })
 export class UploadComponent implements OnInit {
 
-  // @ViewChild('fileInput', {static: false}) fileRef!: ElementRef;
   isLoading = false;
   form = this.fb.group({
     title: this.fb.control('no name', Validators.required),
     description: this.fb.control(''),
     orientation: this.fb.control('horizontal')
   });
-  // fileUploaded: FileUpload | null = null;
-  // filePath = '';
   fileName = '';
   fileOriginalSize = 0;
   fileAfterCompressSize = 0;
@@ -42,19 +38,6 @@ export class UploadComponent implements OnInit {
 
   private readonly basePath = '/uploads';
 
-  private _saveFileData() {
-    // const { title, description, orientation } = this.form.value;
-    // const { url, name } = this.fileUploaded as FileUpload;
-    //
-    // this.afs.collection(COLLECTION_IMAGES).doc(`image_${title}`).set({ name, url, title, orientation, description })
-    //   .then(() => {
-    //     console.log("Document successfully written!");
-    //     this._clearForm();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error writing document: ", error);
-    //   });
-  }
 
   private _clearForm() {
     this.form.patchValue({ title: 'no name', description: '', orientation: 'horizontal' }, {emitEvent: false});

@@ -1,16 +1,13 @@
-<ng-container *ngIf="collectionImages$ | async as images">
-  <div class="figure" *ngFor="let image of images" [ngClass]="image.orientation">
-    <img [attr.src]="image.url.compress" [attr.alt]="image.title" (load)="loadHandler($event)">
-    <button mat-mini-fab color="primary" aria-label="Open in full">
-      <mat-icon>open_in_full</mat-icon>
-    </button>
-    <span class="figcaption">{{image.title}}</span>
-  </div>
-  <mat-paginator [length]="100"
-                 [pageSize]="10"
-                 [pageSizeOptions]="[5, 10, 25, 100]"
-                 (page)="pageEvent = $event"
-                 aria-label="Select page">
-  </mat-paginator>
-
-</ng-container>
+<div class="figure" *ngFor="let image of images" [ngClass]="image.orientation">
+  <img [attr.src]="image.url.compress" [attr.alt]="image.title" (load)="loadHandler($event)">
+  <button mat-mini-fab color="primary" aria-label="Open in full" (click)="openDialog(image)">
+    <mat-icon>open_in_full</mat-icon>
+  </button>
+  <span class="figcaption">{{image.title}}</span>
+</div>
+<mat-paginator [length]="images.length"
+               [pageSize]="10"
+               [pageSizeOptions]="[5, 10, 25, 100]"
+               (page)="pageEvent = $event"
+               aria-label="Select page">
+</mat-paginator>
