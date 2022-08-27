@@ -18,6 +18,7 @@ const DATA_IMAGES_COLLECTION = 'images';
 export class MainComponent implements OnInit, OnDestroy {
   pageEvent!: PageEvent;
   images: FileDataType[] = [];
+  curImages: FileDataType[] = [];
 
   public loadHandler(e: Event) {
     (e.target as HTMLImageElement).style.opacity = '1'
@@ -28,6 +29,15 @@ export class MainComponent implements OnInit, OnDestroy {
       width: '100%',
       data: image,
     });
+  }
+
+  public changePageEvent({ pageIndex, pageSize }: PageEvent) {
+    console.log('pageIndex: ',pageIndex);
+    console.log('pageSize: ', pageSize);
+    const start = pageIndex * pageSize;
+    const end = start + pageSize;
+    this.curImages = this.images.slice(start, end);
+    this.cdr.markForCheck();
   }
 
   protected readonly onDestroy = new Subject<void>();
@@ -45,6 +55,7 @@ export class MainComponent implements OnInit, OnDestroy {
       .subscribe((images) => {
         console.log(images);
         this.images = images;
+        this.curImages = images.slice(0, 5);
         this.cdr.markForCheck();
       })
   }
