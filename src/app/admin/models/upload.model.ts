@@ -1,3 +1,4 @@
+
 export type FileUpload = {
   name: string,
   url: string,
@@ -18,6 +19,8 @@ export type FileDataType = {
     original: string
   }
 }
+
+
 
 export type UploadInitialState = {
   data: FileDataType[]
