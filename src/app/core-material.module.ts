@@ -23,6 +23,8 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatListModule} from '@angular/material/list';
 
 import {ClipboardModule} from '@angular/cdk/clipboard';
 
@@ -54,6 +56,8 @@ const materialModules = [
   MatCheckboxModule,
   MatTooltipModule,
   MatDividerModule,
+  MatSidenavModule,
+  MatListModule,
 
   ClipboardModule
 ];
