@@ -16,7 +16,6 @@ const DATA_IMAGES_COLLECTION = 'images';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainComponent implements OnInit, OnDestroy {
-  pageEvent!: PageEvent;
   images: FileDataType[] = [];
   curImages: FileDataType[] = [];
 
@@ -32,8 +31,6 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   public changePageEvent({ pageIndex, pageSize }: PageEvent) {
-    console.log('pageIndex: ',pageIndex);
-    console.log('pageSize: ', pageSize);
     const start = pageIndex * pageSize;
     const end = start + pageSize;
     this.curImages = this.images.slice(start, end);
@@ -53,7 +50,6 @@ export class MainComponent implements OnInit, OnDestroy {
       .valueChanges()
       .pipe(takeUntil(this.onDestroy))
       .subscribe((images) => {
-        console.log(images);
         this.images = images;
         this.curImages = images.slice(0, 5);
         this.cdr.markForCheck();

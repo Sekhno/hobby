@@ -17,12 +17,14 @@ const routes: Routes = [
       },
       {
         path: 'login',
-        component: LoginComponent
+        component: LoginComponent,
+        title: 'Login'
       },
       {
         path: 'upload',
         component: UploadComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        title: 'Upload'
       },
       { path: '**', redirectTo: 'login' },
     ],
