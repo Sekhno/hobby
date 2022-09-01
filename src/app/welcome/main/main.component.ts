@@ -5,9 +5,13 @@ import {takeUntil, tap} from "rxjs/operators";
 import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {FullImageModalComponent} from "../full-image-modal/full-image-modal.component";
-import {FileDataType} from "../../admin/models/upload.model";
+import {
+  CategoryDataType,
+  COLLECTION_CATEGORIES,
+  COLLECTION_IMAGES,
+  FileDataType
+} from "../../admin/models/upload.model";
 
-const DATA_IMAGES_COLLECTION = 'images';
 
 @Component({
   selector: 'app-main',
@@ -19,23 +23,25 @@ export class MainComponent implements OnInit, OnDestroy {
   images: FileDataType[] = [];
   curImages: FileDataType[] = [];
 
+  readonly collectionCategories$ = this.afs.collection<CategoryDataType>(COLLECTION_CATEGORIES).valueChanges();
+
   public loadHandler(e: Event) {
     (e.target as HTMLImageElement).style.opacity = '1'
   }
 
-  public openDialog(image: FileDataType) {
-    this.dialog.open(FullImageModalComponent, {
-      width: '100%',
-      data: image,
-    });
-  }
-
-  public changePageEvent({ pageIndex, pageSize }: PageEvent) {
-    const start = pageIndex * pageSize;
-    const end = start + pageSize;
-    this.curImages = this.images.slice(start, end);
-    this.cdr.markForCheck();
-  }
+  // public openDialog(image: FileDataType) {
+  //   this.dialog.open(FullImageModalComponent, {
+  //     width: '100%',
+  //     data: image,
+  //   });
+  // }
+  //
+  // public changePageEvent({ pageIndex, pageSize }: PageEvent) {
+  //   const start = pageIndex * pageSize;
+  //   const end = start + pageSize;
+  //   this.curImages = this.images.slice(start, end);
+  //   this.cdr.markForCheck();
+  // }
 
   protected readonly onDestroy = new Subject<void>();
 
@@ -46,7 +52,7 @@ export class MainComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.afs.collection<FileDataType>(DATA_IMAGES_COLLECTION)
+    this.afs.collection<FileDataType>(COLLECTION_IMAGES)
       .valueChanges()
       .pipe(takeUntil(this.onDestroy))
       .subscribe((images) => {

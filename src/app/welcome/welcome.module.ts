@@ -10,6 +10,7 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatDialogModule} from "@angular/material/dialog";
 import {FullImageModalComponent} from './full-image-modal/full-image-modal.component';
+import { CategoryComponent } from './category/category.component';
 
 
 const materialModules = [
@@ -23,7 +24,8 @@ const materialModules = [
 @NgModule({
   declarations: [
     MainComponent,
-    FullImageModalComponent
+    FullImageModalComponent,
+    CategoryComponent
   ],
   imports: [
     CommonModule,

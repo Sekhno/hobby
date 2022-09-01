@@ -7,9 +7,17 @@ import {
   NgxImageCompressService,
   UploadResponse,
 } from 'ngx-image-compress';
-import {FileDataType} from "../models/upload.model";
+import {
+  FileDataType,
+  CategoryDataType,
+  CategoryItemType,
+  COLLECTION_IMAGES,
+  COLLECTION_CATEGORIES
+} from "../models/upload.model";
+import {takeUntilDestroy$} from "../../_helpers/takeUntilDestroy.function";
+import {first, map, switchMap} from "rxjs/operators";
 
-const COLLECTION_IMAGES = 'images';
+
 const ORIGINAL_IMAGE_PREFIX = 'original_';
 const COMPRESS_IMAGE_PREFIX = 'compress_';
 
@@ -23,10 +31,15 @@ const COMPRESS_IMAGE_PREFIX = 'compress_';
 export class UploadComponent implements OnInit {
 
   isLoading = false;
+  categoryForm = this.fb.group({
+    name: this.fb.control('', Validators.required)
+  })
   form = this.fb.group({
     title: this.fb.control('no name', Validators.required),
     description: this.fb.control(''),
-    orientation: this.fb.control('horizontal')
+    orientation: this.fb.control('horizontal'),
+    category: this.fb.control('', Validators.required),
+    cover: this.fb.control(false)
   });
   fileName = '';
   fileOriginalSize = 0;
@@ -34,7 +47,10 @@ export class UploadComponent implements OnInit {
   imgResultBeforeCompress: DataUrl = '';
   imgResultAfterCompress: DataUrl = '';
 
-  readonly collectionImages$ = this.afs.collection<FileDataType>('images').valueChanges();
+  categories: CategoryItemType[] = [];
+
+  readonly collectionImages$ = this.afs.collection(COLLECTION_IMAGES).doc(COLLECTION_CATEGORIES);
+  readonly collectionCategories$ = this.afs.collection<CategoryDataType>(COLLECTION_CATEGORIES).valueChanges();
 
   private readonly basePath = '/uploads';
 
@@ -61,33 +77,15 @@ export class UploadComponent implements OnInit {
       this.imgResultBeforeCompress = image;
       this.fileName = fileName;
       this.fileOriginalSize = this.imageCompress.byteCount(image);
-      console.warn('File Name:', fileName);
-      console.warn(`Original: ${image.substring(0, 50)}... (${image.length} characters)`);
-      console.warn('Size in bytes was:', this.imageCompress.byteCount(image));
-
 
       this.imageCompress
         .compressFile(image, orientation, 50, 50)
         .then((result: DataUrl) => {
           this.imgResultAfterCompress = result;
           this.fileAfterCompressSize =  this.imageCompress.byteCount(result);
-
-          console.warn(`Compressed: ${result.substring(0, 50)}... (${ result.length } characters)`);
-          console.warn('Size in bytes is now:', this.imageCompress.byteCount(result));
           this.cdr.markForCheck();
-          // this.storage.ref(fileName).putString(result, 'data_url').then(
-          //   (v) => console.log('success', v)
-          // )
         });
     });
-  }
-
-  public onFileSelected() {
-    // const inputNode: any = this.fileRef.nativeElement;
-    // const fileUpload = inputNode.files[0] as FileUpload;
-    // const name = fileUpload.name;
-    // this.filePath = `${this.basePath}/${name}`;
-    // this.fileUploaded = fileUpload;
   }
 
   public async uploadAndSaveFileData() {
@@ -98,26 +96,18 @@ export class UploadComponent implements OnInit {
       original: await original.ref.getDownloadURL(),
       compress: await compress.ref.getDownloadURL()
     }
-    const { title, description, orientation } = this.form.value;
+    const { title, description, orientation, cover, category } = this.form.value;
     const name = this.fileName;
     const data = { title, description, orientation, url, name }
-    await this.afs.collection(COLLECTION_IMAGES).doc(`${name}`).set(data)
+
+    if (cover) {
+      await this.afs.collection(COLLECTION_CATEGORIES).doc(`${category}`).set({name: category, cover: url.compress})
+    }
+
+    await this.afs.collection(COLLECTION_IMAGES).doc(COLLECTION_CATEGORIES).collection(`${category}`).add(data)
     this._clearForm();
     this.isLoading = false;
-      // .then(() => {
-      //   console.log("Document successfully written!");
-      //   this._clearForm();
-      // })
-      // .catch((error) => {
-      //   console.error("Error writing document: ", error);
-      // });
-
-    // await this.storage.upload(this.fileName, data);
-    //
-    // this.storage.ref(this.filePath).getDownloadURL().subscribe((url) => {
-    //   (this.fileUploaded as FileUpload).url = url;
-    //   this._saveFileData()
-    // });
+    this.cdr.markForCheck();
   }
 
   public delete(image: FileDataType) {
@@ -138,17 +128,39 @@ export class UploadComponent implements OnInit {
     });
   }
 
+  public async saveCategory() {
+    this.isLoading = true;
+    const { name } = this.categoryForm.value;
+    const cover = null;
+    await this.afs.collection(COLLECTION_CATEGORIES).doc(`${name}`).set({ name, cover });
+    this.isLoading = false;
+    this.cdr.markForCheck();
+  }
+
   constructor(
     private storage: AngularFireStorage,
     private afs: AngularFirestore,
     private fb: FormBuilder,
     private imageCompress: NgxImageCompressService,
     private cdr: ChangeDetectorRef
-  ) {
-    this.collectionImages$.subscribe((r) => console.log(r))
-  }
+  ) { }
 
   ngOnInit(): void {
+    this.collectionCategories$.subscribe((category) => {
+      category.forEach(({name}) => {
+        this.collectionImages$.collection<FileDataType>(name).valueChanges()
+          .subscribe((data) => {
+            const item = this.categories.find((c) => c.name === name);
+            if (item) {
+              item.data = data;
+            } else {
+              this.categories.push({name, data})
+            }
+            this.cdr.markForCheck();
+          })
+      })
+    });
+
   }
 
 }

@@ -1,13 +1,22 @@
-<div class="figure" *ngFor="let image of curImages" [ngClass]="image.orientation">
-  <img [attr.src]="image.url.compress" [attr.alt]="image.title" (load)="loadHandler($event)">
-  <button mat-mini-fab color="primary" aria-label="Open in full" (click)="openDialog(image)">
-    <mat-icon>open_in_full</mat-icon>
-  </button>
-  <span class="figcaption">{{image.title}}</span>
-</div>
-<mat-paginator [length]="images.length"
-               [pageSize]="5"
-               [pageSizeOptions]="[5, 10, 25, 100]"
-               (page)="changePageEvent($event)"
-               aria-label="Select page">
-</mat-paginator>
+<ng-container *ngIf="collectionCategories$ | async as categories">
+  <div class="figure horizontal" *ngFor="let category of categories" [routerLink]="['category', category.name]">
+    <img [attr.src]="category.cover" alt="category" (load)="loadHandler($event)">
+    <span class="figcaption">{{category.name}}</span>
+  </div>
+</ng-container>
+
+
+
+<!--<div class="figure" *ngFor="let image of curImages" [ngClass]="image.orientation">-->
+<!--  <img [attr.src]="image.url.compress" [attr.alt]="image.title" (load)="loadHandler($event)">-->
+<!--  <button mat-mini-fab color="primary" aria-label="Open in full" (click)="openDialog(image)">-->
+<!--    <mat-icon>open_in_full</mat-icon>-->
+<!--  </button>-->
+<!--  <span class="figcaption">{{image.title}}</span>-->
+<!--</div>-->
+<!--<mat-paginator [length]="images.length"-->
+<!--               [pageSize]="5"-->
+<!--               [pageSizeOptions]="[5, 10, 25, 100]"-->
+<!--               (page)="changePageEvent($event)"-->
+<!--               aria-label="Select page">-->
+<!--</mat-paginator>-->

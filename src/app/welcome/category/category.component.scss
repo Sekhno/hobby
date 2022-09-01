@@ -1,0 +1,62 @@
+.figure {
+  margin: 2px;
+  padding: 0 2px 0 2px;
+  position: relative;
+  background-color: white;
+  overflow: hidden;
+
+  &.vertical {
+
+  }
+
+  &.horizontal {
+    &:before {
+      padding-top: 75%;
+    }
+    //img {
+    //  width: 100%;
+    //}
+  }
+
+  &:before {
+    content: '';
+    clear: both;
+    display: block;
+    padding-top: 100%;
+  }
+
+  &:first-child {
+    padding: 2px 2px 0 2px;
+  }
+
+  img {
+    width: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+
+  button {
+    position: absolute;
+    right: 20px; top: 20px;
+    opacity: 0.6;
+  }
+
+  .figcaption {
+    padding: .5rem 1rem;
+    position: absolute;
+    bottom: 20px; left: 20px;
+    color: rgba(0,0,0,.5);
+    background-color: rgba(255,255,255, 0.8);
+    border-radius: 4px;
+  }
+}
+
+.back-home {
+  position: fixed;
+  top: 1rem; left: 1rem;
+  z-index: 10;
+}
