@@ -1,0 +1,17 @@
+<button mat-fab color="primary" aria-label="back home" class="back-home" routerLink="welcome">
+  <mat-icon>home</mat-icon>
+</button>
+
+<div class="figure" *ngFor="let image of curImages" [ngClass]="image.orientation">
+  <img [attr.src]="image.url.compress" [attr.alt]="image.title" (load)="loadHandler($event)">
+  <button mat-mini-fab color="primary" aria-label="Open in full" (click)="openDialog(image)">
+    <mat-icon>open_in_full</mat-icon>
+  </button>
+  <span class="figcaption">{{image.title}}</span>
+</div>
+<mat-paginator [length]="images.length"
+               [pageSize]="5"
+               [pageSizeOptions]="[5, 10, 25, 100]"
+               (page)="changePageEvent($event)"
+               aria-label="Select page">
+</mat-paginator>

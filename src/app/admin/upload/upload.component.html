@@ -3,68 +3,121 @@
 </div>
 <h1 fxLayout="row" fxLayoutAlign="center">Welcome, Olga!</h1>
 
-<form novalidate fxLayout="column" fxLayoutAlign="center" [formGroup]="form">
-  <mat-form-field appearance="legacy">
-    <mat-label>Name</mat-label>
-    <input matInput placeholder="Enter name" type="text" formControlName="title">
-    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-  </mat-form-field>
+<mat-tab-group mat-align-tabs="center">
+  <!--  Category Tab -->
+  <mat-tab label="Category">
+    <form novalidate fxLayout="column" fxLayoutAlign="center" [formGroup]="categoryForm">
+      <mat-form-field appearance="legacy">
+        <mat-label>Category name</mat-label>
+        <input matInput placeholder="Enter category name" type="text" formControlName="name">
+        <mat-icon matSuffix>category</mat-icon>
+      </mat-form-field>
 
-  <mat-form-field appearance="legacy">
-    <mat-label>Description</mat-label>
-    <input matInput placeholder="Enter description" type="text" formControlName="description">
-  </mat-form-field>
+      <button type="button" mat-raised-button
+              [disabled]="categoryForm.invalid"
+              (click)="saveCategory()"
+      >Save</button>
+    </form>
 
-  <mat-form-field appearance="legacy">
-    <mat-label>Orientation</mat-label>
-    <select matNativeControl required formControlName="orientation">
-      <option value="horizontal">Horizontal</option>
-      <option value="vertical">Vertical</option>
-    </select>
-  </mat-form-field>
+    <ng-container *ngIf="collectionCategories$ | async as categories">
+      <table>
+        <tr *ngFor="let category of categories">
+          <td>{{ category.name }}</td>
+          <td><mat-icon>delete</mat-icon></td>
+        </tr>
+      </table>
+    </ng-container>
+  </mat-tab>
 
-  <button type="button" mat-raised-button
-          [disabled]="form.invalid"
-          (click)="selectImage()"
-  >Choose File</button>
-<!--  <input hidden (change)="onFileSelected()" #fileInput type="file" id="file">-->
+  <!--  Upload Tab -->
+  <mat-tab label="Upload">
+    <form novalidate fxLayout="column" fxLayoutAlign="center" [formGroup]="form">
+      <mat-checkbox formControlName="cover">Set the picture as main of category?</mat-checkbox>
 
-  <button type="button" mat-raised-button color="primary"
-          [disabled]="!fileName || !fileOriginalSize || !fileAfterCompressSize"
-          (click)="uploadAndSaveFileData()"
-  >Upload</button>
-</form>
+      <mat-form-field appearance="legacy">
+        <mat-label>Categories</mat-label>
+        <select matNativeControl required formControlName="category">
+          <option *ngFor="let category of collectionCategories$ | async"
+                  [value]="category.name"
+          >{{category.name}}</option>
+        </select>
+      </mat-form-field>
 
-<ng-container *ngIf="fileName && fileOriginalSize && fileAfterCompressSize">
-  <table>
-    <thead>
-    <tr>
-      <th>Name</th>
-      <th>Original size</th>
-      <th>Compress size</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>{{fileName}}</td>
-      <td>{{fileOriginalSize}} </td>
-      <td>{{fileAfterCompressSize}}</td>
-    </tr>
-    </tbody>
+      <mat-form-field appearance="legacy">
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Enter name" type="text" formControlName="title">
+        <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+      </mat-form-field>
 
-  </table>
-</ng-container>
+      <mat-form-field appearance="legacy">
+        <mat-label>Description</mat-label>
+        <input matInput placeholder="Enter description" type="text" formControlName="description">
+      </mat-form-field>
 
-<ng-container *ngIf="collectionImages$ | async as images;">
-  <table class="list">
-    <tbody>
-      <tr *ngFor="let image of images">
-        <td>{{image.title}}</td>
-        <td>
-          <mat-icon (click)="delete(image)">delete</mat-icon>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</ng-container>
+      <mat-form-field appearance="legacy">
+        <mat-label>Orientation</mat-label>
+        <select matNativeControl required formControlName="orientation">
+          <option value="horizontal">Horizontal</option>
+          <option value="vertical">Vertical</option>
+        </select>
+      </mat-form-field>
+
+      <button type="button" mat-raised-button
+              [disabled]="form.invalid"
+              (click)="selectImage()"
+      >Choose File</button>
+
+      <button type="button" mat-raised-button color="primary"
+              [disabled]="!fileName || !fileOriginalSize || !fileAfterCompressSize"
+              (click)="uploadAndSaveFileData()"
+      >Upload</button>
+    </form>
+
+    <ng-container *ngIf="fileName && fileOriginalSize && fileAfterCompressSize">
+      <table>
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Original size</th>
+          <th>Compress size</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>{{fileName}}</td>
+          <td>{{fileOriginalSize}} </td>
+          <td>{{fileAfterCompressSize}}</td>
+        </tr>
+        </tbody>
+
+      </table>
+    </ng-container>
+
+    <mat-tab-group mat-align-tabs="center">
+      <mat-tab *ngFor="let category of categories" [label]="category.name">
+        <table>
+          <tr *ngFor="let image of category.data">
+            <td>{{image.title}}</td>
+            <td><mat-icon>delete</mat-icon></td>
+          </tr>
+        </table>
+      </mat-tab>
+    </mat-tab-group>
+
+<!--    <ng-container *ngIf="collectionImages$ | async as images;">-->
+<!--      {{images}}-->
+<!--      <table class="list">-->
+<!--        <tbody>-->
+<!--        <tr *ngFor="let image of images">-->
+<!--          <td>{{image.title}}</td>-->
+<!--          <td>-->
+<!--            <mat-icon (click)="delete(image)">delete</mat-icon>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--      </table>-->
+<!--    </ng-container>-->
+  </mat-tab>
+</mat-tab-group>
+
 

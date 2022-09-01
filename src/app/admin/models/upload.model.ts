@@ -20,8 +20,21 @@ export type FileDataType = {
   }
 }
 
+export type CategoryDataType = {
+  name: string;
+  cover: string | null;
+}
+
+export type CategoryItemType = {
+  name: string,
+  data: FileDataType[]
+}
+
 
 
 export type UploadInitialState = {
   data: FileDataType[]
 }
+
+export const COLLECTION_CATEGORIES = 'categories';
+export const COLLECTION_IMAGES = 'images';
