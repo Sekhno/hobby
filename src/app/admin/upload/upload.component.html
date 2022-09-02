@@ -23,7 +23,7 @@
       <table>
         <tr *ngFor="let category of categories">
           <td>{{ category.name }}</td>
-          <td><mat-icon>delete</mat-icon></td>
+          <td><mat-icon (click)="deleteCategory(category)">delete</mat-icon></td>
         </tr>
       </table>
     </ng-container>
@@ -37,7 +37,7 @@
       <mat-form-field appearance="legacy">
         <mat-label>Categories</mat-label>
         <select matNativeControl required formControlName="category">
-          <option *ngFor="let category of collectionCategories$ | async"
+          <option *ngFor="let category of categories"
                   [value]="category.name"
           >{{category.name}}</option>
         </select>
@@ -98,7 +98,7 @@
         <table>
           <tr *ngFor="let image of category.data">
             <td>{{image.title}}</td>
-            <td><mat-icon>delete</mat-icon></td>
+            <td><mat-icon (click)="delete(image, category.name)">delete</mat-icon></td>
           </tr>
         </table>
       </mat-tab>

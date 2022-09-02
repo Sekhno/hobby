@@ -35,10 +35,10 @@ export class UploadComponent implements OnInit {
     name: this.fb.control('', Validators.required)
   })
   form = this.fb.group({
+    category: this.fb.control('', Validators.required),
     title: this.fb.control('no name', Validators.required),
     description: this.fb.control(''),
     orientation: this.fb.control('horizontal'),
-    category: this.fb.control('', Validators.required),
     cover: this.fb.control(false)
   });
   fileName = '';
@@ -56,7 +56,10 @@ export class UploadComponent implements OnInit {
 
 
   private _clearForm() {
-    this.form.patchValue({ title: 'no name', description: '', orientation: 'horizontal' }, {emitEvent: false});
+    this.form.patchValue(
+      { title: 'no name', description: '', orientation: 'horizontal', category: '', cover: false },
+      {emitEvent: false}
+    );
     this.fileName = '';
     this.fileOriginalSize = 0;
     this.fileAfterCompressSize = 0;
@@ -67,9 +70,7 @@ export class UploadComponent implements OnInit {
   }
 
   private _uploadImage(type: 'original' | 'compress', data: DataUrl) {
-    return this.storage.ref(`${this.basePath}/${type}/${this.fileName}`)
-      .putString(data, 'data_url')
-      // .then((v) => console.log('success', v.ref.getDownloadURL()))
+    return this.storage.ref(`${this.basePath}/${type}/${this.fileName}`).putString(data, 'data_url')
   }
 
   public selectImage() {
@@ -104,28 +105,32 @@ export class UploadComponent implements OnInit {
       await this.afs.collection(COLLECTION_CATEGORIES).doc(`${category}`).set({name: category, cover: url.compress})
     }
 
-    await this.afs.collection(COLLECTION_IMAGES).doc(COLLECTION_CATEGORIES).collection(`${category}`).add(data)
+    this.collectionImages$.collection(`${category}`).add(data).then((res) => {
+      const {id} = res;
+      res.update('id', id);
+    })
     this._clearForm();
     this.isLoading = false;
     this.cdr.markForCheck();
   }
 
-  public delete(image: FileDataType) {
-    const desertOriginalRef = this.storage.ref(`${this.basePath}/original`).child(`${image.name}`);
-    const desertCompressRef = this.storage.ref(`${this.basePath}/compress`).child(`${image.name}`);
+  public delete({id, name}: FileDataType, category: string) {
+    const desertOriginalRef = this.storage.ref(`${this.basePath}/original`).child(`${name}`);
+    const desertCompressRef = this.storage.ref(`${this.basePath}/compress`).child(`${name}`);
 
-    desertOriginalRef.delete().subscribe((v) => {
-      console.log('delete desertOriginalRef', v)
+    desertOriginalRef.delete().subscribe(() => {
+      console.log('delete desertOriginalRef')
     });
-    desertCompressRef.delete().subscribe((v) => {
-      console.log('delete desertCompressRef', v)
+    desertCompressRef.delete().subscribe(() => {
+      console.log('delete desertCompressRef')
     });
 
-    this.afs.collection(COLLECTION_IMAGES).doc(`${image.name}`).delete().then(() => {
-      console.log("Document successfully deleted!");
-    }).catch((error) => {
-      console.error("Error removing document: ", error);
-    });
+    this.collectionImages$.collection(category).doc(id)
+      .delete().then(() => {
+        console.log("Document successfully deleted!");
+      }).catch((error) => {
+        console.error("Error removing document: ", error);
+      });
   }
 
   public async saveCategory() {
@@ -135,6 +140,19 @@ export class UploadComponent implements OnInit {
     await this.afs.collection(COLLECTION_CATEGORIES).doc(`${name}`).set({ name, cover });
     this.isLoading = false;
     this.cdr.markForCheck();
+  }
+
+  public async deleteCategory({ name }: CategoryDataType) {
+    await this.afs.collection(COLLECTION_CATEGORIES).doc(name).delete();
+    this.collectionImages$
+      .collection<FileDataType>(name)
+      .valueChanges()
+      .pipe(first())
+      .subscribe((images) => {
+        images.forEach(({id}) => {
+          this.collectionImages$.collection<FileDataType>(name).doc(id).delete()
+        })
+      });
   }
 
   constructor(
@@ -148,7 +166,8 @@ export class UploadComponent implements OnInit {
   ngOnInit(): void {
     this.collectionCategories$.subscribe((category) => {
       category.forEach(({name}) => {
-        this.collectionImages$.collection<FileDataType>(name).valueChanges()
+        this.collectionImages$.collection<FileDataType>(name)
+          .valueChanges()
           .subscribe((data) => {
             const item = this.categories.find((c) => c.name === name);
             if (item) {
@@ -160,7 +179,5 @@ export class UploadComponent implements OnInit {
           })
       })
     });
-
   }
-
 }
