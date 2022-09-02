@@ -10,6 +10,7 @@ export type FileUpload = {
 }
 
 export type FileDataType = {
+  id: string,
   name: string,
   description: string
   orientation: "vertical" | "horizontal"
