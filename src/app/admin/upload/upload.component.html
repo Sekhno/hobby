@@ -1,7 +1,7 @@
 <div class="spinner" *ngIf="isLoading">
   <mat-spinner></mat-spinner>
 </div>
-<h1 fxLayout="row" fxLayoutAlign="center">Welcome, Olga!</h1>
+<h1 fxLayout="row" fxLayoutAlign="center">Welcome, Dmytro!</h1>
 
 <mat-tab-group mat-align-tabs="center">
   <!--  Category Tab -->
@@ -36,11 +36,11 @@
 
       <mat-form-field appearance="legacy">
         <mat-label>Categories</mat-label>
-        <select matNativeControl required formControlName="category">
-          <option *ngFor="let category of categories"
+        <mat-select  formControlName="category">
+          <mat-option *ngFor="let category of categories"
                   [value]="category.name"
-          >{{category.name}}</option>
-        </select>
+          >{{category.name}}</mat-option>
+        </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="legacy">
@@ -56,10 +56,10 @@
 
       <mat-form-field appearance="legacy">
         <mat-label>Orientation</mat-label>
-        <select matNativeControl required formControlName="orientation">
-          <option value="horizontal">Horizontal</option>
-          <option value="vertical">Vertical</option>
-        </select>
+        <mat-select  formControlName="orientation">
+          <mat-option [value]="'horizontal'">Horizontal</mat-option>
+          <mat-option [value]="'vertical'">Vertical</mat-option>
+        </mat-select>
       </mat-form-field>
 
       <button type="button" mat-raised-button
